@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hexin.cbas.spider.dal.mapper.spider.MetricRecordMapper">
+    <resultMap id="BaseResultMap" type="com.hexin.cbas.spider.dal.po.spider.MetricRecordPO">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="channel_id" jdbcType="INTEGER" property="channelId"/>
+        <result column="lag" jdbcType="INTEGER" property="lag"/>
+        <result column="lag_time" jdbcType="DECIMAL" property="lagTime"/>
+        <result column="health" jdbcType="TINYINT" property="health"/>
+        <result column="metric_time" jdbcType="TIMESTAMP" property="metricTime"/>
+        <result column="metric_date" jdbcType="VARCHAR" property="metricDate"/>
+        <result column="channel_name" jdbcType="VARCHAR" property="channelName"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, channel_id, lag, lag_time, health, metric_time, metric_date
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from metric_record
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from metric_record
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.hexin.cbas.spider.dal.po.spider.MetricRecordPO">
+    insert into metric_record (id, channel_id, lag, 
+      lag_time, health, metric_time, 
+      metric_date)
+    values (#{id,jdbcType=INTEGER}, #{channelId,jdbcType=INTEGER}, #{lag,jdbcType=INTEGER}, 
+      #{lagTime,jdbcType=DECIMAL}, #{health,jdbcType=TINYINT}, #{metricTime,jdbcType=TIMESTAMP}, 
+      #{metricDate,jdbcType=VARCHAR})
+  </insert>
+    <insert id="insertSelective" parameterType="com.hexin.cbas.spider.dal.po.spider.MetricRecordPO">
+        insert into metric_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="channelId != null">
+                channel_id,
+            </if>
+            <if test="lag != null">
+                lag,
+            </if>
+            <if test="lagTime != null">
+                lag_time,
+            </if>
+            <if test="health != null">
+                health,
+            </if>
+            <if test="metricTime != null">
+                metric_time,
+            </if>
+            <if test="metricDate != null">
+                metric_date,
+            </if>
+            <if test="dealRate != null">
+                deal_rate,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="channelId != null">
+                #{channelId,jdbcType=INTEGER},
+            </if>
+            <if test="lag != null">
+                #{lag,jdbcType=INTEGER},
+            </if>
+            <if test="lagTime != null">
+                #{lagTime,jdbcType=DECIMAL},
+            </if>
+            <if test="health != null">
+                #{health,jdbcType=TINYINT},
+            </if>
+            <if test="metricTime != null">
+                #{metricTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="metricDate != null">
+                #{metricDate,jdbcType=VARCHAR},
+            </if>
+            <if test="dealRate != null">
+                #{dealRate,jdbcType=DECIMAL},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.hexin.cbas.spider.dal.po.spider.MetricRecordPO">
+        update metric_record
+        <set>
+            <if test="channelId != null">
+                channel_id = #{channelId,jdbcType=INTEGER},
+            </if>
+            <if test="lag != null">
+                lag = #{lag,jdbcType=INTEGER},
+            </if>
+            <if test="lagTime != null">
+                lag_time = #{lagTime,jdbcType=DECIMAL},
+            </if>
+            <if test="health != null">
+                health = #{health,jdbcType=TINYINT},
+            </if>
+            <if test="metricTime != null">
+                metric_time = #{metricTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="metricDate != null">
+                metric_date = #{metricDate,jdbcType=VARCHAR},
+            </if>
+            <if test="dealRate != null">
+                deal_rate = #{dealRate,jdbcType=DECIMAL},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.hexin.cbas.spider.dal.po.spider.MetricRecordPO">
+    update metric_record
+    set channel_id = #{channelId,jdbcType=INTEGER},
+      lag = #{lag,jdbcType=INTEGER},
+      lag_time = #{lagTime,jdbcType=DECIMAL},
+      health = #{health,jdbcType=TINYINT},
+      metric_time = #{metricTime,jdbcType=TIMESTAMP},
+      metric_date = #{metricDate,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <select id="healthGroup" resultMap="BaseResultMap">
+        select a.channel_id,a.metric_date,b.health
+        from  metric_record  a
+        LEFT JOIN
+        (select channel_id,metric_date,health from metric_record  where health=0 and metric_date&gt;= #{startDate} and metric_date &lt;= #{endDate} GROUP BY channel_id,metric_date,health)b
+        on a.channel_id=b.channel_id and a.metric_date=b.metric_date
+        where
+        a.metric_date&gt;= #{startDate} and a.metric_date &lt;= #{endDate}
+        GROUP BY a.channel_id,a.metric_date
+    </select>
+
+    <select id="lagTimeGroup" resultMap="BaseResultMap">
+        select max(a.lag_time) as lag_time,a.channel_id,a.metric_date,b.name as channel_name from  metric_record a
+        LEFT JOIN spider_data_channel b
+        on a.channel_id=b.id
+        where a.metric_date &gt;= #{startDate} and a.metric_date &lt;= #{endDate} and a.lag_time is not null
+        GROUP BY a.metric_date,a.channel_id
+    </select>
+
+    <delete id="clearMetricRecord">
+        delete from metric_record where metric_time &lt;#{metricDate}
+    </delete>
+</mapper>

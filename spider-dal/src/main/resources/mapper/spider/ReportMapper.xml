@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hexin.cbas.spider.dal.mapper.spider.ReportMapper">
+    <resultMap id="BaseResultMap" type="com.hexin.cbas.spider.dal.po.spider.ReportPO">
+        <id column="id" property="id"/>
+        <result column="channel_num" property="channelNum"/>
+        <result column="channel_data_total" property="channelDataTotal"/>
+        <result column="channel_throughput" property="channelThroughput"/>
+        <result column="channel_lag" property="channelLag"/>
+        <result column="channel_arrival_rate" property="channelArrivalRate"/>
+        <result column="channel_access_time" property="channelAccessTime"/>
+        <result column="p_date" property="pDate"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , channel_num, channel_data_total, channel_throughput, channel_lag, channel_arrival_rate, channel_access_time, p_date
+    </sql>
+
+    <select id="selectByDate" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from spider_report
+        where p_date = #{pDate}
+    </select>
+
+    <delete id="deleteByPrimaryDate" parameterType="java.lang.String">
+        delete
+        from spider_report
+        where p_date = #{pDate}
+    </delete>
+
+    <insert id="insert" parameterType="com.hexin.cbas.spider.dal.po.spider.ReportPO">
+        insert into spider_report (id, channel_num, channel_data_total, channel_throughput, channel_lag,
+                                   channel_arrival_rate, channel_access_time, p_date)
+        values (#{id}, #{channelNum}, #{channelDataTotal}, #{channelThroughput}, #{channelLag}, #{channelArrivalRate},
+                #{channelAccessTime}, #{pDate})
+    </insert>
+
+    <select id="report" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select c.channel_num, a.channel_data_total, b.channel_throughput, b.channel_lag, a.channel_arrival_rate, c.channel_access_time
+        from (select sum(collect_amount) as channel_data_total, avg(arrival_rate) as channel_arrival_rate from spider_data_amount_summary where p_date=#{pDate}) a,
+             (select sum(record.rate) as channel_throughput,avg(record.lag) as channel_lag from  (select channel_id,max(deal_rate) as rate ,max(lag_time) as lag from metric_record where metric_date=#{pDate} GROUP BY channel_id) record) b,
+             (select avg(TIMESTAMPDIFF(SECOND,start_time,end_time)) as channel_access_time,count(1) as channel_num from spider_data_channel where state=1 ) c
+    </select>
+
+</mapper>

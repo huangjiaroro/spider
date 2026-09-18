@@ -1,0 +1,29 @@
+server:
+  port: 8866
+
+spring:
+  profiles:
+    active: dev
+
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - prometheus
+          - health
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+api:
+  prefix: /spider
+  auth-include: "/spider/external/report_data_amount,/spider/openApi,/actuator"

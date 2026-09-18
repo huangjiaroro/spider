@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hexin.cbas.spider.dal.mapper.spider.TreeHostInfoMapper">
+    <resultMap id="BaseResultMap" type="com.hexin.cbas.spider.dal.po.spider.TreeHostInfoPO">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="room_code" jdbcType="VARCHAR" property="roomCode"/>
+        <result column="room_name" jdbcType="VARCHAR" property="roomName"/>
+        <result column="host_name" jdbcType="VARCHAR" property="hostName"/>
+        <result column="host_status" jdbcType="INTEGER" property="hostStatus"/>
+        <result column="business_code" jdbcType="VARCHAR" property="businessCode"/>
+        <result column="business_name" jdbcType="VARCHAR" property="businessName"/>
+        <result column="class_code" jdbcType="VARCHAR" property="classCode"/>
+        <result column="class_name" jdbcType="VARCHAR" property="className"/>
+        <result column="login_address" jdbcType="VARCHAR" property="loginAddress"/>
+        <result column="department" jdbcType="VARCHAR" property="department"/>
+        <result column="inter_ip" jdbcType="VARCHAR" property="interIp"/>
+        <result column="outer_ip" jdbcType="VARCHAR" property="outerIp"/>
+        <result column="public_ip" jdbcType="VARCHAR" property="publicIp"/>
+        <result column="online" jdbcType="BIT" property="online"/>
+        <result column="exporter_ip" jdbcType="VARCHAR" property="exporterIp"/>
+        <result column="in_use" property="inUse"/>
+        <result column="online_confirm" property="onlineConfirm"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, room_code, room_name, host_name, host_status, business_code, business_name, class_code, 
+    class_name, login_address, department, inter_ip, outer_ip, public_ip, online,exporter_ip,in_use,online_confirm
+  </sql>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from business_server_info
+        where in_use=1 or develop_confirm=0
+    </select>
+
+
+    <update id="confirmOffline" parameterType="java.lang.String">
+        update business_server_info set develop_confirm =1 where host_name =#{hostName} and develop_confirm=0
+    </update>
+
+    <update id="confirmOnline" parameterType="java.lang.String">
+        update business_server_info set online_confirm =1 where host_name =#{hostName} and online_confirm=0
+    </update>
+
+    <select id="businessCode" resultType="java.lang.String">
+        SELECT business_code from business_server_info where
+        inter_ip like concat('%', #{ip}, '%') or
+        outer_ip like concat('%', #{ip}, '%') or
+        public_ip like concat('%', #{ip}, '%') or
+        host_name like concat('%', #{ip}, '%') or
+        business_code like concat('%', #{ip}, '%') or
+        exporter_ip like concat('%', #{ip}, '%')
+        group by business_code
+    </select>
+
+</mapper>

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hexin.cbas.spider.dal.mapper.spider.ChannelNodeMapper">
+    <resultMap id="BaseResultMap" type="com.hexin.cbas.spider.dal.po.spider.ChannelNodePO">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="node_name" jdbcType="VARCHAR" property="nodeName"/>
+        <result column="work_tree" jdbcType="VARCHAR" property="workTree"/>
+        <result column="node_type" jdbcType="VARCHAR" property="nodeType"/>
+        <result column="alert" jdbcType="INTEGER" property="alert"/>
+        <result column="alert_person" jdbcType="VARCHAR" property="alertPerson"/>
+        <result column="alert_level" jdbcType="INTEGER" property="alertLevel"/>
+        <result column="metric_element" jdbcType="LONGVARCHAR" property="metricElement"/>
+        <result column="metric_info" jdbcType="LONGVARCHAR" property="metricInfo"/>
+        <result column="parent_id" jdbcType="VARCHAR" property="parentId"/>
+        <result column="node_id" jdbcType="VARCHAR" property="nodeId"/>
+        <result column="channel_id" jdbcType="INTEGER" property="channelId"/>
+        <result column="name" jdbcType="VARCHAR" property="channelName"/>
+        <result column="draw_json" jdbcType="VARCHAR" property="drawJson"/>
+        <result column="node_classify" jdbcType="INTEGER" property="classify"/>
+        <result column="source_node" jdbcType="INTEGER" property="sourceNode"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    a.id, node_name, work_tree, node_type, alert, alert_person, alert_level, metric_element, metric_info,parent_id,node_id,channel_id,draw_json,node_classify,source_node
+  </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        ,b.name
+        from channel_node
+        LEFT JOIN spider_data_channel b
+        on channel_id=b.id
+        where a.id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectByNodeId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        ,b.name
+        from channel_node a
+        LEFT JOIN spider_data_channel b
+        on channel_id=b.id
+        where node_id = #{nodeId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectByChannelId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        ,b.name
+        from channel_node a
+        LEFT JOIN spider_data_channel b
+        on channel_id=b.id
+        where channel_id = #{channelId,jdbcType=INTEGER}
+    </select>
+
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from channel_node
+    where id = #{nodeId,jdbcType=INTEGER}
+  </delete>
+
+    <insert id="insertSelective" parameterType="com.hexin.cbas.spider.dal.po.spider.ChannelNodePO">
+        insert into channel_node
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="nodeName != null">
+                node_name,
+            </if>
+            <if test="workTree != null">
+                work_tree,
+            </if>
+            <if test="nodeType != null">
+                node_type,
+            </if>
+            <if test="alert != null">
+                alert,
+            </if>
+            <if test="alertPerson != null">
+                alert_person,
+            </if>
+            <if test="alertLevel != null">
+                alert_level,
+            </if>
+            <if test="metricElement != null">
+                metric_element,
+            </if>
+            <if test="metricInfo != null">
+                metric_info,
+            </if>
+            <if test="nodeId != null">
+                node_id,
+            </if>
+            <if test="parentId != null">
+                parent_id,
+            </if>
+            <if test="channelId != null">
+                channel_id,
+            </if>
+            <if test="drawJson != null">
+                draw_json,
+            </if>
+            <if test="classify != null">
+                node_classify,
+            </if>
+            <if test="sourceNode != null">
+                source_node,
+            </if>
+
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="nodeName != null">
+                #{nodeName,jdbcType=VARCHAR},
+            </if>
+            <if test="workTree != null">
+                #{workTree,jdbcType=VARCHAR},
+            </if>
+            <if test="nodeType != null">
+                #{nodeType,jdbcType=VARCHAR},
+            </if>
+            <if test="alert != null">
+                #{alert,jdbcType=INTEGER},
+            </if>
+            <if test="alertPerson != null">
+                #{alertPerson,jdbcType=VARCHAR},
+            </if>
+            <if test="alertLevel != null">
+                #{alertLevel,jdbcType=INTEGER},
+            </if>
+            <if test="metricElement != null">
+                #{metricElement,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="metricInfo != null">
+                #{metricInfo,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="nodeId != null">
+                #{nodeId,jdbcType=VARCHAR},
+            </if>
+            <if test="parentId != null">
+                #{parentId,jdbcType=VARCHAR},
+            </if>
+            <if test="channelId != null">
+                #{channelId,jdbcType=INTEGER},
+            </if>
+            <if test="drawJson != null">
+                #{drawJson,jdbcType=VARCHAR},
+            </if>
+            <if test="classify != null">
+                #{classify,jdbcType=INTEGER},
+            </if>
+            <if test="sourceNode != null">
+                #{sourceNode},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.hexin.cbas.spider.dal.po.spider.ChannelNodePO">
+        update channel_node
+        <set>
+            parent_id = #{parentId,jdbcType=VARCHAR},
+            <if test="nodeName != null">
+                node_name = #{nodeName,jdbcType=VARCHAR},
+            </if>
+            <if test="workTree != null">
+                work_tree = #{workTree,jdbcType=VARCHAR},
+            </if>
+            <if test="nodeType != null">
+                node_type = #{nodeType,jdbcType=VARCHAR},
+            </if>
+            <if test="alert != null">
+                alert = #{alert,jdbcType=INTEGER},
+            </if>
+            <if test="alertPerson != null">
+                alert_person = #{alertPerson,jdbcType=VARCHAR},
+            </if>
+            <if test="alertLevel != null">
+                alert_level = #{alertLevel,jdbcType=INTEGER},
+            </if>
+            <if test="metricElement != null">
+                metric_element = #{metricElement,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="metricInfo != null">
+                metric_info = #{metricInfo,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="channelId != null">
+                channel_id = #{channelId,jdbcType=INTEGER},
+            </if>
+            <if test="drawJson != null">
+                draw_json = #{drawJson,jdbcType=VARCHAR},
+            </if>
+            <if test="classify != null">
+                node_classify=#{classify,jdbcType=INTEGER},
+            </if>
+            <if test="sourceNode != null">
+                source_node = #{sourceNode},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <delete id="deleteByChannelId">
+        delete from channel_node where channel_id = #{channelId}
+    </delete>
+
+    <select id="selectBusinessChannel" resultType="java.lang.String">
+        SELECT channel_id FROM channel_node WHERE
+        <foreach collection="list" index="index" item="item" open="(" close=")" separator="or">
+            metric_info like concat('%', #{item}, '%')
+        </foreach>
+        group by channel_id
+    </select>
+
+</mapper>

@@ -1,0 +1,114 @@
+采集平台升级数据库改动
+
+
+
+ALTER TABLE  spider.`spider_data_channel`
+ADD COLUMN `metric`  int(1) NULL DEFAULT 0 COMMENT '是否开启监控 0：否 1 是',
+ADD COLUMN `metric_day_type`  int(1) NULL DEFAULT 0 COMMENT '监控日类型：0 全部 1：交易日',
+ADD COLUMN `metric_start`  varchar(5) NULL COMMENT '监控开始时间时分 格式：hh:mm',
+ADD COLUMN `metric_end`  varchar(5) NULL COMMENT '监控结束时间时分 格式：hh:mm',
+ADD COLUMN `metric_interval`  int NULL DEFAULT 0 COMMENT '监控执行间隔',
+ADD COLUMN `interval_type`  int NULL DEFAULT 0 COMMENT '时间间隔时间类型： 0：秒 1：分钟 2：小时',
+ADD COLUMN `alert_threshold`  int(2) NULL DEFAULT 1 COMMENT '告警阈值',
+ADD COLUMN `arrival_rate`  varchar(255) NULL COMMENT '到达率告警阈值',
+ADD COLUMN `earlier_rate`  varchar(255) NULL COMMENT '同比率告警阈值';
+
+
+ALTER TABLE spider.`spider_data_amount_summary`
+ADD COLUMN `arrival_rate`  varchar(10) NULL COMMENT '到达率',
+ADD COLUMN `earlier_rate`  varchar(10) NULL COMMENT '同比率',
+ADD COLUMN `source_amount_report`  bigint NULL COMMENT '上报的数据量';
+
+
+
+CREATE TABLE spider.`alert_record` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `alert_content` varchar(255) DEFAULT NULL COMMENT '告警内容',
+  `alert_level` int(1) DEFAULT '1' COMMENT '告警级别',
+  `alert_person` varchar(100) DEFAULT NULL COMMENT '告警人',
+  `alert_state` int(1) DEFAULT '0' COMMENT '告警状态 0：未告警 1：告警中 2：告警成功 3：告警失败',
+  `alert_retry` int(11) DEFAULT '0' COMMENT '重试次数',
+  `error_reason` text COMMENT '告警失败信息',
+  `create_time` timestamp NULL DEFAULT NULL COMMENT '创建时间',
+  `alert_time` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE spider.`channel_node` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `node_name` varchar(100) DEFAULT NULL COMMENT '节点名称',
+  `node_type` varchar(10) DEFAULT NULL COMMENT '节点类型',
+  `alert` int(1) DEFAULT '0' COMMENT '是否进行节点监控 0：否 1：是',
+  `metric_element` text COMMENT '监控环境参数配置Json',
+  `alert_person` varchar(255) DEFAULT NULL COMMENT '告警人 多个逗号分隔',
+  `alert_level` int(1) DEFAULT NULL COMMENT '告警级别',
+  `metric_info` text COMMENT '节点信息Json',
+  `work_tree` varchar(100) DEFAULT NULL COMMENT '业务树',
+  `parent_id` varchar(11) DEFAULT NULL COMMENT '上一节点id',
+  `node_id` varchar(11) NOT NULL,
+  `channel_id` int(11) DEFAULT NULL COMMENT '通道Id',
+  `draw_json` varchar(255) DEFAULT NULL COMMENT '点位置信息JSON',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_channel_node_id` (`node_id`) USING BTREE,
+  KEY `idx_channel_node_parent_id` (`parent_id`) USING BTREE,
+  KEY `idx_channel_node_channel_id` (`channel_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE spider.`info_meta` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `info_type` varchar(10) DEFAULT NULL,
+  `info_key` varchar(30) DEFAULT NULL,
+  `info_value` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+
+
+INSERT INTO spider.`info_meta` VALUES ('1', 'filebeat', 'job', 'job');
+INSERT INTO spider.`info_meta` VALUES ('2', 'flume', 'source_name', 'source名称');
+INSERT INTO spider.`info_meta` VALUES ('3', 'flume', 'channel_name', 'channel名称');
+INSERT INTO spider.`info_meta` VALUES ('4', 'flume', 'sink_name', 'sink名称');
+INSERT INTO spider.`info_meta` VALUES ('5', 'flume', 'job', 'job');
+INSERT INTO spider.`info_meta` VALUES ('6', 'kafka', 'group_id', '消费组');
+INSERT INTO spider.`info_meta` VALUES ('7', 'kafka', 'topic', 'topic');
+INSERT INTO spider.`info_meta` VALUES ('8', 'kafka', 'job', 'job');
+INSERT INTO spider.`info_meta` VALUES ('9', 'logstash', 'job', 'job');
+
+
+
+
+CREATE TABLE spider.`metric_meta` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `metric_type` varchar(10) DEFAULT NULL COMMENT '监控组件类型',
+  `metric_key` varchar(255) DEFAULT NULL COMMENT '监控key',
+  `metric_value` varchar(255) DEFAULT NULL COMMENT '监控key中文含义',
+  `link_column` varchar(255) DEFAULT NULL COMMENT '占位符替代字段名',
+  `target_type` int(1) DEFAULT '0' COMMENT '指标属性：1：延迟 2：离线输入量指标 3：离线输出量指标',
+  `target_unit` varchar(10) DEFAULT NULL COMMENT '指标单位',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+
+INSERT INTO spider.`metric_meta` VALUES ('1', 'filebeat', 'rate(filebeat_filebeat_events{event=\"added\",job=\"${job}\"}[10s])', '读取速率', 'job', '0', '条/s');
+INSERT INTO spider.`metric_meta` VALUES ('2', 'filebeat', 'rate(filebeat_filebeat_events{event=\"done\",job=\"${job}\"}[10s])', '处理速率', 'job', '0', '条/s');
+INSERT INTO spider.`metric_meta` VALUES ('3', 'filebeat', 'filebeat_filebeat_events{event=\"active\",job=\"${job}\"}', '延迟量', 'job', '1', '条');
+INSERT INTO spider.`metric_meta` VALUES ('4', 'filebeat', 'increase(filebeat_filebeat_events{event=\"added\",job=\"${job}\"}[1h])', '输入增量（小时）', 'job', '0', '条');
+INSERT INTO spider.`metric_meta` VALUES ('5', 'filebeat', 'increase(filebeat_filebeat_events{event=\"added\",job=\"${job}\"}[1d])', '输入增量（天）', 'job', '2', '条');
+INSERT INTO spider.`metric_meta` VALUES ('6', 'flume', 'org_apache_flume_channel_${channel_name}_ChannelSize{job=\"${job}\"}', '延迟量', 'channel_name,job', '1', '条');
+INSERT INTO spider.`metric_meta` VALUES ('7', 'flume', 'rate(org_apache_flume_sink_${sink_name}_EventDrainAttemptCount{job=\"${job}\"}[10s])', '处理速率', 'sink_name,job', '0', '条/s');
+INSERT INTO spider.`metric_meta` VALUES ('8', 'flume', 'rate(org_apache_flume_source_${source_name}_EventAcceptedCount{job=\"${job}\"}[10s])', '读取速率', 'source_name,job', '0', '条/s');
+INSERT INTO spider.`metric_meta` VALUES ('9', 'flume', 'increase(org_apache_flume_source_${source_name}_EventAcceptedCount{job=\"${job}\"}[1h]}', '输入增量（小时）', 'source_name,job', '0', '条');
+INSERT INTO spider.`metric_meta` VALUES ('10', 'flume', 'increase(org_apache_flume_source_${source_name}_EventAcceptedCount{job=\"${job}\"}[1d]}', '输入增量（天）', 'source_name,job', '2', '条');
+INSERT INTO spider.`metric_meta` VALUES ('11', 'kafka', 'burrow_kafka_consumer_partiton_lag{consumer_group=\"${group_id}\",topic=\"${topic}\",job=\"$job\"}', '延迟量', 'group_id,topic,job', '1', '条');
+INSERT INTO spider.`metric_meta` VALUES ('12', 'filebeat', 'increase(filebeat_filebeat_events{event=\"done\",job=\"${job}\"}[1d])', '输出增量（天）', 'job', '3', '条');
+INSERT INTO spider.`metric_meta` VALUES ('13', 'flume', 'increase(org_apache_flume_sink_${sink_name}_EventDrainSuccessCount{job=\"${job}\"}[1d])', '输出增量（天）', 'sink_name,job', '3', '条');
+INSERT INTO spider.`metric_meta` VALUES ('14', 'logstash', 'increase(logstash_events_in{job=\"${job}\"}[1d])', '输入增量（天）', 'job', '0', '条');
+INSERT INTO spider.`metric_meta` VALUES ('15', 'logstash', 'increase(logstash_events_in{job=\"${job}\"}[1h])', '输入增量（小时）', 'job', '0', '条');
+INSERT INTO spider.`metric_meta` VALUES ('16', 'logstash', 'rate(logstash_events_out{job=\"${job}\"}[10s])', '处理速率', 'job', '0', '条/s');
+INSERT INTO spider.`metric_meta` VALUES ('17', 'logstash', 'rate(logstash_events_in{job=\"${job}\"}[10s])', '读取速率', 'job', '0', '条/s');
+INSERT INTO spider.`metric_meta` VALUES ('18', 'logstash', 'increase(logstash_events_out{job=\"${job}\"}[1d])', '输出增量（天）', 'job', '0', '条');
+INSERT INTO spider.`metric_meta` VALUES ('19', 'kafka', 'increase(burrow_kafka_consumer_current_partiton{consumer_group=\"${group_id}\",topic=\"${topic}\",job=\"$job\"}[1m])', '处理速率', 'group_id,topic,job', '0', '条/s');
+INSERT INTO spider.`metric_meta` VALUES ('20', 'kafka', 'increase(burrow_kafka_topic_partiton_offset{topic=\"${topic}\",job=\"$job\"}[1m])', '输入速率', 'topic,job', '0', '条/s');
+INSERT INTO spider.`metric_meta` VALUES ('21', 'kafka', 'increase(burrow_kafka_topic_partiton_offset{topic=\"${topic}\",job=\"$job\"}[1d])', '输入增量（天）', 'topic,job', '2', '条');
+INSERT INTO spider.`metric_meta` VALUES ('22', 'kafka', 'increase(burrow_kafka_consumer_current_partiton{consumer_group=\"${group_id}\",topic=\"${topic}\",job=\"$job\"}[1d])', '输出增量（天）', 'group_id,topic,job', '3', '条');
+

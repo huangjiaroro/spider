@@ -1,0 +1,115 @@
+spring:
+  datasource:
+    spider:
+      name: spider
+      type: com.alibaba.druid.pool.DruidDataSource
+      url: jdbc:mysql://10.0.56.134:3306/spider?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true
+      username: root
+      password: 10jqka
+      driver-class-name: com.mysql.jdbc.Driver
+      # 下面为连接池的补充设置，应用到上面所有数据源中
+      # 初始化大小，最小，最大
+      initialSize: 1
+      minIdle: 5
+      maxActive: 20
+      # 配置获取连接等待超时的时间
+      maxWait: 30000
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      timeBetweenEvictionRunsMillis: 60000
+      # 配置一个连接在池中最小生存的时间，单位是毫秒
+      validationQuery: SELECT 1
+      testOnBorrow: false
+      testOnReturn: false
+      testWhileIdle: true
+      minEvictableIdleTimeMillis: 300000
+      # 打开PSCache，并且指定每个连接上PSCache的大小
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
+      # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+      filters: stat,wall,slf4j
+      # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=10000
+      #connectionInitSqls: set innodb_lock_wait_timeout=120
+    metacollection:
+      name: metacollection
+      type: com.alibaba.druid.pool.DruidDataSource
+      url: jdbc:mysql://10.0.56.134:3306/metacollection?useUnicode=true&characterEncoding=UTF-8
+      username: root
+      password: 10jqka
+      driver-class-name: com.mysql.jdbc.Driver
+      # 下面为连接池的补充设置，应用到上面所有数据源中
+      # 初始化大小，最小，最大
+      initialSize: 1
+      minIdle: 5
+      maxActive: 20
+      # 配置获取连接等待超时的时间
+      maxWait: 30000
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      timeBetweenEvictionRunsMillis: 60000
+      # 配置一个连接在池中最小生存的时间，单位是毫秒
+      validationQuery: SELECT 1
+      testOnBorrow: false
+      testOnReturn: false
+      testWhileIdle: true
+      minEvictableIdleTimeMillis: 300000
+      # 打开PSCache，并且指定每个连接上PSCache的大小
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
+      # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+      filters: stat,wall,slf4j
+      # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=10000
+      #connectionInitSqls: set innodb_lock_wait_timeout=120
+    downcount:
+          name: downcount
+          type: com.alibaba.druid.pool.DruidDataSource
+          url: jdbc:mysql://10.0.56.134:3306/down_count?useUnicode=true&characterEncoding=UTF-8
+          username: root
+          password: 10jqka
+          driver-class-name: com.mysql.jdbc.Driver
+          # 下面为连接池的补充设置，应用到上面所有数据源中
+          # 初始化大小，最小，最大
+          initialSize: 1
+          minIdle: 5
+          maxActive: 20
+          # 配置获取连接等待超时的时间
+          maxWait: 30000
+          # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+          timeBetweenEvictionRunsMillis: 60000
+          # 配置一个连接在池中最小生存的时间，单位是毫秒
+          validationQuery: SELECT 1
+          testOnBorrow: false
+          testOnReturn: false
+          testWhileIdle: true
+          minEvictableIdleTimeMillis: 300000
+          # 打开PSCache，并且指定每个连接上PSCache的大小
+          poolPreparedStatements: true
+          maxPoolPreparedStatementPerConnectionSize: 20
+          # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+          filters: stat,wall,slf4j
+          # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+          connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=10000
+          #connectionInitSqls: set innodb_lock_wait_timeout=120
+api:
+  auth: false
+
+spider_admin: wanghujia@myhexin.com,maopeijiong@myhexin.com,lijie4@myhexin.com,zouying@myhexin.com,admin@myhexin.com
+
+spider:
+  prometheus-address: http://10.0.56.195:9090/api/v1/query_range
+  vanish-address: http://10.0.56.197:3000/mock/355/cbas_sendv_msg.php
+  upload:
+    address: http://10.0.56.195:5454/edith/indicator/v1/detail/upload
+    index-code: data_integration_trends
+    email: huangjiarong@myhexin.com
+  tpc:
+    address: http://cbas-tpc-cockpit.cbas/tpc/outer/v1/index/edit?projectId=A10&time=%s&indexId=%s&indexValue=%s
+    metric-id: 10805
+    arrival-id: 4077
+    lag-id: 10804
+    app: arsenal-tools
+
+  alert:
+      start-time: "00:00"
+      end-time: "23:59"
+      ip-white-list : "10.0.56.88"

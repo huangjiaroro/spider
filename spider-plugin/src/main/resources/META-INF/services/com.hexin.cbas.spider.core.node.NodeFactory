@@ -1,0 +1,4 @@
+com.hexin.cbas.spider.plugin.filebeat.FilebeatNodeFactory
+com.hexin.cbas.spider.plugin.flume.FlumeNodeFactory
+com.hexin.cbas.spider.plugin.kafka.KafkaNodeFactory
+com.hexin.cbas.spider.plugin.logstash.LogstashNodeFactory

@@ -1,0 +1,6 @@
+/.idea/
+target
+*.iml
+public
+/logs/
+/spider-web/logs/spider.log

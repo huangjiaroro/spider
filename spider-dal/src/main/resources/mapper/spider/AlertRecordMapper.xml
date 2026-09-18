@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hexin.cbas.spider.dal.mapper.spider.AlertRecordMapper">
+    <resultMap id="BaseResultMap" type="com.hexin.cbas.spider.dal.po.spider.AlertRecordPO">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="alert_content" jdbcType="VARCHAR" property="alertContent"/>
+        <result column="alert_level" jdbcType="INTEGER" property="alertLevel"/>
+        <result column="alert_person" jdbcType="VARCHAR" property="alertPerson"/>
+        <result column="alert_state" jdbcType="INTEGER" property="alertState"/>
+        <result column="alert_retry" jdbcType="INTEGER" property="alertRetry"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="alert_time" jdbcType="TIMESTAMP" property="alertTime"/>
+        <result column="error_reason" jdbcType="LONGVARCHAR" property="errorReason"/>
+        <result column="channel_name" jdbcType="VARCHAR" property="channelName"/>
+        <result column="paas_alert_instance" jdbcType="VARCHAR" property="paasAlertInstance"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id, alert_content, alert_level, alert_person, alert_state, alert_retry, create_time, 
+    alert_time,error_reason,channel_name,paas_alert_instance
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from alert_record
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from alert_record
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.hexin.cbas.spider.dal.po.spider.AlertRecordPO">
+    insert into alert_record (id, alert_content, alert_level, 
+      alert_person, alert_state, alert_retry, 
+      create_time, alert_time, error_reason,paas_alert_instance
+      )
+    values (#{id,jdbcType=INTEGER}, #{alertContent,jdbcType=VARCHAR}, #{alertLevel,jdbcType=INTEGER}, 
+      #{alertPerson,jdbcType=VARCHAR}, #{alertState,jdbcType=INTEGER}, #{alertRetry,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{alertTime,jdbcType=TIMESTAMP}, #{errorReason,jdbcType=LONGVARCHAR}
+     , #{paasAlertInstance} )
+  </insert>
+    <insert id="insertSelective" parameterType="com.hexin.cbas.spider.dal.po.spider.AlertRecordPO">
+        insert into alert_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="alertContent != null">
+                alert_content,
+            </if>
+            <if test="alertLevel != null">
+                alert_level,
+            </if>
+            <if test="alertPerson != null">
+                alert_person,
+            </if>
+            <if test="alertState != null">
+                alert_state,
+            </if>
+            <if test="alertRetry != null">
+                alert_retry,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="alertTime != null">
+                alert_time,
+            </if>
+            <if test="errorReason != null">
+                error_reason,
+            </if>
+            <if test="channelName != null">
+                channel_name,
+            </if>
+            <if test="paasAlertInstance != null">
+                paas_alert_instance,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="alertContent != null">
+                #{alertContent,jdbcType=VARCHAR},
+            </if>
+            <if test="alertLevel != null">
+                #{alertLevel,jdbcType=INTEGER},
+            </if>
+            <if test="alertPerson != null">
+                #{alertPerson,jdbcType=VARCHAR},
+            </if>
+            <if test="alertState != null">
+                #{alertState,jdbcType=INTEGER},
+            </if>
+            <if test="alertRetry != null">
+                #{alertRetry,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="alertTime != null">
+                #{alertTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="errorReason != null">
+                #{errorReason,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="channelName != null">
+                #{channelName,jdbcType=VARCHAR},
+            </if>
+            <if test="paasAlertInstance != null">
+                #{paasAlertInstance},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.hexin.cbas.spider.dal.po.spider.AlertRecordPO">
+        update alert_record
+        <set>
+            <if test="alertContent != null">
+                alert_content = #{alertContent,jdbcType=VARCHAR},
+            </if>
+            <if test="alertLevel != null">
+                alert_level = #{alertLevel,jdbcType=INTEGER},
+            </if>
+            <if test="alertPerson != null">
+                alert_person = #{alertPerson,jdbcType=VARCHAR},
+            </if>
+            <if test="alertState != null">
+                alert_state = #{alertState,jdbcType=INTEGER},
+            </if>
+            <if test="alertRetry != null">
+                alert_retry = #{alertRetry,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="alertTime != null">
+                alert_time = #{alertTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="errorReason != null">
+                error_reason = #{errorReason,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="channelName != null">
+                channel_name = #{channelName,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.hexin.cbas.spider.dal.po.spider.AlertRecordPO">
+    update alert_record
+    set alert_content = #{alertContent,jdbcType=VARCHAR},
+      alert_level = #{alertLevel,jdbcType=INTEGER},
+      alert_person = #{alertPerson,jdbcType=VARCHAR},
+      alert_state = #{alertState,jdbcType=INTEGER},
+      alert_retry = #{alertRetry,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      alert_time = #{alertTime,jdbcType=TIMESTAMP},
+      error_reason = #{errorReason,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <select id="selectUnAlertRecord" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from alert_record
+        where alert_state=0
+    </select>
+
+    <delete id="clearAlertedRecord">
+        delete from alert_record
+        where  alert_time &lt; #{alertDate}
+    </delete>
+
+    <select id="selectOpsAlertInfo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        FROM alert_record
+        WHERE ops_state=0
+        AND alert_person IN
+        <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+    <update id="updateOpsAlertInfo">
+        UPDATE alert_record set ops_state=1 where id=#{id}
+    </update>
+
+    <select id="dashboardAlert" resultType="com.hexin.cbas.spider.dal.po.spider.DashboardAlertPO">
+        select a.channel_name as channelName,a.hitTimes,b.alertStart,c.alertEnd from
+        (select t.channel_name,count(1) as hitTimes from (select channel_name,alert_time from alert_record where alert_time &gt;= #{startDate} and alert_time &lt; #{endDate}  GROUP BY channel_name,alert_time)t GROUP BY channel_name ) a
+        LEFT JOIN
+        (select min(alert_time) as alertStart,channel_name  from alert_record where  alert_time &gt;= #{startDate} and alert_time &lt; #{endDate} GROUP BY channel_name)b
+        on a.channel_name=b.channel_name
+        LEFT JOIN
+        (select max(alert_time) as alertEnd,channel_name  from alert_record where  alert_time &gt;= #{startDate} and alert_time &lt; #{endDate} GROUP BY channel_name  )c
+        on a.channel_name=c.channel_name
+        where a.channel_name is not null
+        order by a.hitTimes  desc
+    </select>
+
+
+    <update id="batchUpdateAlertStatus">
+        update alert_record set alert_state=1 where id in
+        <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+
+
+</mapper>

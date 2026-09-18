@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hexin.cbas.spider.dal.mapper.spider.PathLifeCycleMapper">
+    <resultMap id="BaseResultMap" type="com.hexin.cbas.spider.dal.po.spider.PathLifeCyclePO">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="path_description" jdbcType="VARCHAR" property="pathDescription"/>
+        <result column="path" jdbcType="VARCHAR" property="path"/>
+        <result column="day_offset" jdbcType="INTEGER" property="dayOffset"/>
+        <result column="date_format" jdbcType="VARCHAR" property="dateFormat"/>
+        <result column="creator" jdbcType="VARCHAR" property="creator"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="channel_id" jdbcType="INTEGER" property="channelId"/>
+        <result column="cold_bak" jdbcType="TINYINT" property="coldBak"/>
+        <result column="cold_bak_start" jdbcType="TIMESTAMP" property="coldBakStart"/>
+        <result column="updater" jdbcType="VARCHAR" property="updater"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="day_unit" jdbcType="VARCHAR" property="dayUnit"/>
+        <result column="business_line" jdbcType="VARCHAR" property="businessLine"/>
+        <result column="cold_bak_offset" jdbcType="INTEGER" property="coldBakOffset"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , path_description, path, day_offset, date_format, creator, create_time, status,
+    channel_id, cold_bak, cold_bak_start, updater, update_time, day_unit,business_line,cold_bak_offset
+    </sql>
+
+    <select id="selectByChannelId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from spider_path_life_cycle
+        where channel_id = #{channelId}
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from spider_path_life_cycle
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from spider_path_life_cycle
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <select id="pageQuery" parameterType="com.hexin.cbas.spider.dal.po.spider.PathLifeCyclePO"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from spider_path_life_cycle
+        <where>
+            <if test="pathDescription != null and pathDescription != ''">
+                and path_description like concat('%', #{pathDescription}, '%')
+            </if>
+            <if test="path != null and path != ''">
+                and `path` like concat('%', #{path}, '%')
+            </if>
+            <if test="coldBak != null">
+                and cold_bak =#{coldBak}
+            </if>
+            <if test="status != null">
+                and status =#{status}
+            </if>
+            <if test="businessLine != null and businessLine != ''">
+                and business_line like concat('%', #{businessLine}, '%')
+            </if>
+        </where>
+        limit #{offset}, #{size}
+    </select>
+
+    <select id="pageCount" parameterType="com.hexin.cbas.spider.dal.po.spider.PathLifeCyclePO"
+            resultType="java.lang.Integer">
+        select
+        count(1)
+        from spider_path_life_cycle
+        <where>
+            <if test="pathDescription != null and pathDescription != ''">
+                and path_description like concat('%', #{pathDescription}, '%')
+            </if>
+            <if test="coldBak != null">
+                and cold_bak =#{coldBak}
+            </if>
+            <if test="status != null">
+                and status =#{status}
+            </if>
+            <if test="path != null and path != ''">
+                and `path` like concat('%', #{path}, '%')
+            </if>
+            <if test="businessLine != null and businessLine != ''">
+                and business_line like concat('%', #{businessLine}, '%')
+            </if>
+        </where>
+    </select>
+
+    <insert id="insert" parameterType="com.hexin.cbas.spider.dal.po.spider.PathLifeCyclePO">
+        insert into spider_path_life_cycle (id, path_description, path,
+                                            day_offset, date_format, creator,
+                                            create_time, status, channel_id,
+                                            cold_bak, cold_bak_start, updater,
+                                            update_time, day_unit, business_line, cold_bak_offset)
+        values (#{id,jdbcType=INTEGER}, #{pathDescription,jdbcType=VARCHAR}, #{path,jdbcType=VARCHAR},
+                #{dayOffset,jdbcType=INTEGER}, #{dateFormat,jdbcType=VARCHAR}, #{creator,jdbcType=VARCHAR},
+                #{createTime,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT}, #{channelId,jdbcType=INTEGER},
+                #{coldBak,jdbcType=BIT}, #{coldBakStart,jdbcType=TIMESTAMP}, #{updater,jdbcType=VARCHAR},
+                #{updateTime,jdbcType=TIMESTAMP}, #{dayUnit,jdbcType=VARCHAR}, #{businessLine}, #{coldBakOffset})
+    </insert>
+    <insert id="insertSelective" parameterType="com.hexin.cbas.spider.dal.po.spider.PathLifeCyclePO">
+        insert into spider_path_life_cycle
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="pathDescription != null">
+                path_description,
+            </if>
+            <if test="path != null">
+                `path`,
+            </if>
+            <if test="dayOffset != null">
+                day_offset,
+            </if>
+            <if test="dateFormat != null">
+                date_format,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="channelId != null">
+                channel_id,
+            </if>
+            <if test="coldBak != null">
+                cold_bak,
+            </if>
+            <if test="coldBakStart != null">
+                cold_bak_start,
+            </if>
+            <if test="updater != null">
+                updater,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="dayUnit != null">
+                day_unit,
+            </if>
+            <if test="businessLine != null">
+                business_line,
+            </if>
+            <if test="coldBakOffset != null">
+                cold_bak_offset,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="pathDescription != null">
+                #{pathDescription,jdbcType=VARCHAR},
+            </if>
+            <if test="path != null">
+                #{path,jdbcType=VARCHAR},
+            </if>
+            <if test="dayOffset != null">
+                #{dayOffset,jdbcType=INTEGER},
+            </if>
+            <if test="dateFormat != null">
+                #{dateFormat,jdbcType=VARCHAR},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=TINYINT},
+            </if>
+            <if test="channelId != null">
+                #{channelId,jdbcType=INTEGER},
+            </if>
+            <if test="coldBak != null">
+                #{coldBak,jdbcType=BIT},
+            </if>
+            <if test="coldBakStart != null">
+                #{coldBakStart,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updater != null">
+                #{updater,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="dayUnit != null">
+                #{dayUnit,jdbcType=VARCHAR},
+            </if>
+            <if test="businessLine != null">
+                #{businessLine,jdbcType=VARCHAR},
+            </if>
+            <if test="coldBakOffset != null">
+                #{coldBakOffset},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.hexin.cbas.spider.dal.po.spider.PathLifeCyclePO">
+        update spider_path_life_cycle
+        <set>
+            <if test="pathDescription != null">
+                path_description = #{pathDescription,jdbcType=VARCHAR},
+            </if>
+            <if test="path != null">
+                path = #{path,jdbcType=VARCHAR},
+            </if>
+            <if test="dayOffset != null">
+                day_offset = #{dayOffset,jdbcType=INTEGER},
+            </if>
+            <if test="dateFormat != null">
+                date_format = #{dateFormat,jdbcType=VARCHAR},
+            </if>
+            <if test="creator != null">
+                creator = #{creator,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="channelId != null">
+                channel_id = #{channelId,jdbcType=INTEGER},
+            </if>
+            <if test="coldBak != null">
+                cold_bak = #{coldBak,jdbcType=BIT},
+            </if>
+            <if test="coldBakStart != null">
+                cold_bak_start = #{coldBakStart,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updater != null">
+                updater = #{updater,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="dayUnit != null">
+                day_unit = #{dayUnit,jdbcType=VARCHAR},
+            </if>
+            <if test="businessLine != null">
+                business_line = #{businessLine,jdbcType=VARCHAR},
+            </if>
+            <if test="coldBakOffset != null">
+                cold_bak_offset = #{coldBakOffset},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.hexin.cbas.spider.dal.po.spider.PathLifeCyclePO">
+        update spider_path_life_cycle
+        set path_description = #{pathDescription,jdbcType=VARCHAR},
+            path             = #{path,jdbcType=VARCHAR},
+            day_offset       = #{dayOffset,jdbcType=INTEGER},
+            date_format      = #{dateFormat,jdbcType=VARCHAR},
+            creator          = #{creator,jdbcType=VARCHAR},
+            create_time      = #{createTime,jdbcType=TIMESTAMP},
+            status           = #{status,jdbcType=TINYINT},
+            channel_id       = #{channelId,jdbcType=INTEGER},
+            cold_bak         = #{coldBak,jdbcType=BIT},
+            cold_bak_start   = #{coldBakStart,jdbcType=TIMESTAMP},
+            updater          = #{updater,jdbcType=VARCHAR},
+            update_time      = #{updateTime,jdbcType=TIMESTAMP},
+            day_unit         = #{dayUnit,jdbcType=VARCHAR},
+            business_line= #{businessLine,jdbcType=VARCHAR},
+            cold_bak_offset  = #{coldBakOffset}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <delete id="deleteByChannelId" parameterType="java.lang.Long">
+        delete
+        spider_path_life_cycle where channel_id=
+        #{channelId}
+    </delete>
+</mapper>

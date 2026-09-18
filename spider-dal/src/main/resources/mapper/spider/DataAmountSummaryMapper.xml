@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hexin.cbas.spider.dal.mapper.spider.DataAmountSummaryMapper">
+
+    <resultMap id="BaseResultMap" type="com.hexin.cbas.spider.dal.po.spider.DataAmountSummaryPO">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="channel_id" jdbcType="BIGINT" property="channelId"/>
+        <result column="p_date" jdbcType="CHAR" property="pDate"/>
+        <result column="source_amount" jdbcType="BIGINT" property="sourceAmount"/>
+        <result column="collect_amount" jdbcType="BIGINT" property="collectAmount"/>
+        <result column="arrival_rate" jdbcType="VARCHAR" property="arrivalRate"/>
+        <result column="earlier_rate" jdbcType="VARCHAR" property="earlierRate"/>
+        <result column="channel_name" jdbcType="VARCHAR" property="channelName"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, channel_id, p_date, source_amount, collect_amount,arrival_rate,earlier_rate
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from spider_data_amount_summary
+        where id = #{id}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from spider_data_amount_summary
+        where id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.hexin.cbas.spider.dal.po.spider.DataAmountSummaryPO">
+        insert into spider_data_amount_summary ( channel_id, p_date,source_amount_report,
+        source_amount, collect_amount,arrival_rate,earlier_rate)
+        values (#{channelId}, #{pDate}, #{sourceAmountReport},
+        #{sourceAmount}, #{collectAmount},#{arrivalRate},#{earlierRate})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.hexin.cbas.spider.dal.po.spider.DataAmountSummaryPO">
+        insert into spider_data_amount_summary
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="channelId != null">
+                channel_id,
+            </if>
+            <if test="pDate != null">
+                p_date,
+            </if>
+            <if test="sourceAmountReport != null">
+                source_amount_report,
+            </if>
+            <if test="sourceAmount != null">
+                source_amount,
+            </if>
+            <if test="collectAmount != null">
+                collect_amount,
+            </if>
+            <if test="arrivalRate != null">
+                arrival_rate,
+            </if>
+            <if test="earlierRate != null">
+                earlier_rate,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="channelId != null">
+                #{channelId},
+            </if>
+            <if test="pDate != null">
+                #{pDate},
+            </if>
+            <if test="sourceAmountReport != null">
+                #{sourceAmountReport},
+            </if>
+            <if test="sourceAmount != null">
+                #{sourceAmount},
+            </if>
+            <if test="collectAmount != null">
+                #{collectAmount},
+            </if>
+            <if test="arrivalRate != null">
+                #{arrivalRate},
+            </if>
+            <if test="earlierRate != null">
+                #{earlierRate},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.hexin.cbas.spider.dal.po.spider.DataAmountSummaryPO">
+        update spider_data_amount_summary
+        set channel_id = #{channelId},
+        p_date = #{pDate},
+        source_amount = #{sourceAmount},
+        collect_amount = #{collectAmount}
+        where id = #{id}
+    </update>
+
+    <update id="updateByPrimaryKeySelective"
+            parameterType="com.hexin.cbas.spider.dal.po.spider.DataAmountSummaryPO">
+        update spider_data_amount_summary
+        <set>
+            <if test="channelId !=null ">
+                channel_id = #{channelId},
+            </if>
+            <if test="pDate !=null ">
+                p_date = #{pDate},
+            </if>
+            <if test="sourceAmount !=null ">
+                source_amount = #{sourceAmount},
+            </if>
+            <if test="channelId !=null ">
+                channel_id = #{channelId},
+            </if>
+            <if test="collectAmount !=null ">
+                collect_amount = #{collectAmount},
+            </if>
+            <if test="channelId !=null ">
+                channel_id = #{channelId},
+            </if>
+            <if test="arrivalRate !=null ">
+                arrival_rate = #{arrivalRate},
+            </if>
+            <if test="earlierRate !=null ">
+                earlier_rate = #{earlierRate},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="updateSourceAmount">
+        update spider_data_amount_summary
+        set source_amount_report = #{sourceAmount}
+        where channel_id = #{channelId}
+        and p_date = #{pDate}
+    </update>
+
+    <select id="list" resultMap="BaseResultMap">
+        select
+        a.*,b.name as channel_name
+        from spider_data_amount_summary a,spider_data_channel b
+        where a.channel_id=b.id and a.p_date &gt;= #{startDate}
+        and a.p_date &lt;= #{endDate}
+        <if test="channelId !=null ">
+            and a.channel_id = #{channelId}
+        </if>
+        order by p_date asc
+    </select>
+
+    <select id="selectNearestAmount" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from spider_data_amount_summary
+        where channel_id = #{channelId}
+        and p_date &lt; #{pDate}
+        order by p_date desc limit 1
+    </select>
+
+    <select id="selectAmountByChannelIdAndDate" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from spider_data_amount_summary
+        where channel_id = #{channelId}
+        and p_date = #{pDate}
+    </select>
+
+    <select id="uploadCount" resultType="java.lang.Long">
+        SELECT sum(collect_amount) from spider_data_amount_summary where p_date=#{pDate}
+    </select>
+
+    <select id="summaryGroup" resultMap="BaseResultMap">
+        SELECT sum(collect_amount) as collect_amount, avg(arrival_rate) as arrival_rate,p_date from spider_data_amount_summary where
+        p_date &gt;=#{startDate} and p_date &lt;=#{endDate} and arrival_rate is not null
+        group by p_date
+    </select>
+</mapper>

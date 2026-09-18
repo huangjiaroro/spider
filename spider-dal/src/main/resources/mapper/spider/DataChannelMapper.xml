@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hexin.cbas.spider.dal.mapper.spider.DataChannelMapper">
+
+    <resultMap id="BaseResultMap" type="com.hexin.cbas.spider.dal.po.spider.DataChannelPO">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="state" jdbcType="VARCHAR" property="state"/>
+        <result column="integrity_check_flag" jdbcType="INTEGER" property="integrityCheckFlag"/>
+        <result column="creator" jdbcType="VARCHAR" property="creator"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="updater" jdbcType="VARCHAR" property="updater"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="biz_line" jdbcType="VARCHAR" property="bizLine"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="metric" jdbcType="INTEGER" property="metric"/>
+        <result column="metric_day_type" jdbcType="INTEGER" property="metricDayType"/>
+        <result column="metric_start" jdbcType="VARCHAR" property="metricStart"/>
+        <result column="metric_end" jdbcType="VARCHAR" property="metricEnd"/>
+        <result column="metric_interval" jdbcType="INTEGER" property="metricInterval"/>
+        <result column="interval_type" jdbcType="INTEGER" property="intervalType"/>
+        <result column="alert_threshold" jdbcType="INTEGER" property="alertThreshold"/>
+        <result column="arrival_rate" jdbcType="VARCHAR" property="arrivalRate"/>
+        <result column="earlier_rate" jdbcType="VARCHAR" property="earlierRate"/>
+        <result column="lag_time" jdbcType="DECIMAL" property="lagTime"/>
+        <result column="health" jdbcType="TINYINT" property="health"/>
+        <result column="data_format" jdbcType="VARCHAR" property="dataFormat"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, name, state, biz_line, integrity_check_flag,
+        creator, create_time, updater, update_time,
+        description,metric,metric_day_type,metric_start,metric_end,metric_interval,arrival_rate,earlier_rate,alert_threshold,interval_type,lag_time,
+        health,data_format
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from spider_data_channel
+        where id = #{id}
+    </select>
+
+    <select id="selectRunningChannel" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from spider_data_channel
+        where state= '1'
+    </select>
+
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from spider_data_channel
+        where id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.hexin.cbas.spider.dal.po.spider.DataChannelPO" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into spider_data_channel (name, state, integrity_check_flag,
+        creator, create_time, updater, update_time, biz_line, keyword,
+        description,metric,metric_day_type,metric_start,metric_end,metric_interval,arrival_rate,earlier_rate,
+        alert_threshold,interval_type,lag_time,data_format)
+        values (#{name}, '1', #{integrityCheckFlag}, #{creator}, #{createTime},
+        #{updater}, #{updateTime}, #{bizLine}, #{keyword},
+        #{description},#{metric},#{metricDayType},#{metricStart},#{metricEnd},#{metricInterval},#{arrivalRate},#{earlierRate},
+        #{alertThreshold},#{intervalType},#{lagTime},#{dataFormat})
+    </insert>
+
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.hexin.cbas.spider.dal.po.spider.DataChannelPO">
+        update spider_data_channel
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="integrityCheckFlag != null">
+                integrity_check_flag = #{integrityCheckFlag},
+            </if>
+            <if test="updater != null">
+                updater = #{updater},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="bizLine != null">
+                biz_line = #{bizLine},
+            </if>
+            <if test="keyword != null">
+                keyword = #{keyword},
+            </if>
+            <if test="description != null">
+                description = #{description},
+            </if>
+            <if test="metric != null">
+                metric =#{metric},
+            </if>
+            <if test="metricDayType != null">
+                metric_day_type =#{metricDayType},
+            </if>
+            <if test="metricStart != null">
+                metric_start =#{metricStart},
+            </if>
+            <if test="metricEnd != null">
+                metric_end = #{metricEnd},
+            </if>
+            <if test="metricInterval != null">
+                metric_interval = #{metricInterval},
+            </if>
+            <if test="arrivalRate != null">
+                arrival_rate = #{arrivalRate},
+            </if>
+            <if test="earlierRate != null">
+                earlier_rate = #{earlierRate},
+            </if>
+            <if test="alertThreshold != null">
+                alert_threshold = #{alertThreshold},
+            </if>
+            <if test="intervalType != null">
+                interval_type = #{intervalType},
+            </if>
+            <if test="lagTime != null">
+                lag_time = #{lagTime},
+            </if>
+            <if test="health != null">
+                health = #{health},
+            </if>
+            <if test="dataFormat != null">
+                data_format = #{dataFormat},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+
+    <select id="pageQuery" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from spider_data_channel
+        <where>
+            <if test="queryFields != null">
+                <if test="queryFields.name != null and queryFields.name != ''">
+                    and name like concat('%', #{queryFields.name}, '%')
+                </if>
+                <if test="queryFields.bizLine != null and queryFields.bizLine != ''">
+                    and biz_line = #{queryFields.bizLine}
+                </if>
+                <if test="queryFields.keyword != null and queryFields.keyword != ''">
+                    and keyword like concat('%', #{queryFields.keyword}, '%')
+                </if>
+                <if test="queryFields.state != null and queryFields.state != ''">
+                    and state = #{queryFields.state}
+                </if>
+                <if test="queryFields.health != null">
+                    and health = #{queryFields.health}
+                </if>
+                <if test="queryFields.metric != null">
+                    and metric = #{queryFields.metric}
+                </if>
+            </if>
+            <if test="list != null">
+                AND id IN
+                <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+        order by ${sortField} ${sortDirection} limit #{offset}, #{limit}
+    </select>
+
+    <select id="pageCount" resultType="int">
+        select
+        count(1)
+        from spider_data_channel
+        <where>
+            <if test="queryFields != null">
+                <if test="queryFields.name != null and queryFields.name != ''">
+                    and name like concat('%', #{queryFields.name}, '%')
+                </if>
+                <if test="queryFields.bizLine != null and queryFields.bizLine != ''">
+                    and biz_line = #{queryFields.bizLine}
+                </if>
+                <if test="queryFields.keyword != null and queryFields.keyword != ''">
+                    and keyword like concat('%', #{queryFields.keyword}, '%')
+                </if>
+                <if test="queryFields.state != null and queryFields.state != ''">
+                    and state = #{queryFields.state}
+                </if>
+                <if test="queryFields.health != null">
+                    and health = #{queryFields.health}
+                </if>
+                <if test="queryFields.metric != null">
+                    and metric = #{queryFields.metric}
+                </if>
+            </if>
+        </where>
+    </select>
+
+    <update id="changeState">
+        update spider_data_channel
+        set state = #{state}
+        where id = #{id}
+    </update>
+
+    <update id="changeMetric">
+        update spider_data_channel
+        set metric = #{metric}
+        where id = #{id}
+    </update>
+
+</mapper>

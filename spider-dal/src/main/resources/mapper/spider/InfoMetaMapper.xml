@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hexin.cbas.spider.dal.mapper.spider.InfoMetaMapper">
+  <resultMap id="BaseResultMap" type="com.hexin.cbas.spider.dal.po.spider.InfoMetaPO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="info_type" jdbcType="VARCHAR" property="infoType" />
+    <result column="info_key" jdbcType="VARCHAR" property="infoKey" />
+    <result column="info_value" jdbcType="VARCHAR" property="infoValue" />
+    <result column="classify" jdbcType="INTEGER" property="classify" />
+    <result column="placeholder" jdbcType="VARCHAR" property="placeholder" />
+    <result column="required" jdbcType="VARCHAR" property="required" />
+    <result column="data_type" jdbcType="INTEGER" property="dataType" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, info_type, info_key, info_value, classify, placeholder, required, data_type
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from info_meta
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByTypeAndClassify" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from info_meta
+    where info_type = #{infoType,jdbcType=VARCHAR}
+    and classify = #{classify,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from info_meta
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hexin.cbas.spider.dal.po.spider.InfoMetaPO">
+    insert into info_meta (id, info_type, info_key, 
+      info_value)
+    values (#{id,jdbcType=INTEGER}, #{infoType,jdbcType=VARCHAR}, #{infoKey,jdbcType=VARCHAR}, 
+      #{infoValue,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hexin.cbas.spider.dal.po.spider.InfoMetaPO">
+    insert into info_meta
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="infoType != null">
+        info_type,
+      </if>
+      <if test="infoKey != null">
+        info_key,
+      </if>
+      <if test="infoValue != null">
+        info_value,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="infoType != null">
+        #{infoType,jdbcType=VARCHAR},
+      </if>
+      <if test="infoKey != null">
+        #{infoKey,jdbcType=VARCHAR},
+      </if>
+      <if test="infoValue != null">
+        #{infoValue,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hexin.cbas.spider.dal.po.spider.InfoMetaPO">
+    update info_meta
+    <set>
+      <if test="infoType != null">
+        info_type = #{infoType,jdbcType=VARCHAR},
+      </if>
+      <if test="infoKey != null">
+        info_key = #{infoKey,jdbcType=VARCHAR},
+      </if>
+      <if test="infoValue != null">
+        info_value = #{infoValue,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hexin.cbas.spider.dal.po.spider.InfoMetaPO">
+    update info_meta
+    set info_type = #{infoType,jdbcType=VARCHAR},
+      info_key = #{infoKey,jdbcType=VARCHAR},
+      info_value = #{infoValue,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

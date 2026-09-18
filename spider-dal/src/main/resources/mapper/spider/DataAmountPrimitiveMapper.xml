@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hexin.cbas.spider.dal.mapper.spider.DataAmountPrimitiveMapper">
+
+    <resultMap id="BaseResultMap" type="com.hexin.cbas.spider.dal.po.spider.DataAmountPrimitivePO">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="channel_id" jdbcType="BIGINT" property="channelId"/>
+        <result column="instance_id" jdbcType="VARCHAR" property="instanceId"/>
+        <result column="p_date" jdbcType="CHAR" property="pDate"/>
+        <result column="log_amount" jdbcType="BIGINT" property="logAmount"/>
+        <result column="upload_time" jdbcType="TIMESTAMP" property="uploadTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, channel_id, instance_id, p_date, log_amount, upload_time
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from spider_data_amount_primitive
+        where id = #{id}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from spider_data_amount_primitive
+        where id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.hexin.cbas.spider.dal.po.spider.DataAmountPrimitivePO"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert into spider_data_amount_primitive (channel_id, instance_id,
+        p_date, log_amount,
+        upload_time)
+        values (#{channelId}, #{instanceId},
+        #{pDate}, #{logAmount},
+        #{uploadTime})
+    </insert>
+
+    <insert id="upsert">
+        insert into spider_data_amount_primitive (channel_id, instance_id,
+        p_date, log_amount,
+        upload_time)
+        values (#{channelId}, #{instanceId},
+        #{pDate}, #{logAmount},
+        #{uploadTime}) on duplicate key update log_amount = #{logAmount}, upload_time = #{uploadTime}
+    </insert>
+    
+    <select id="calculateSum" resultType="java.lang.Long">
+        select sum(log_amount) from spider_data_amount_primitive where channel_id = #{channelId} and p_date = #{pDate}
+    </select>
+</mapper>
